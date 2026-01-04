@@ -1,0 +1,199 @@
+﻿@model IEnumerable<CobNet.BI.Web.Models.ResultadoAnteriorModel>
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    CobNet.BI.Highcharts.Gauge.Solid grafico = new CobNet.BI.Highcharts.Gauge.Solid(110, 68);
+    //CobNet.BI.Highcharts.Gauge.gauge grafico = new CobNet.BI.Highcharts.Gauge.gauge(150, 150);
+    grafico.Min = 0;
+
+    //gauge
+    grafico.AdicionaMeta("#CC0000", 80);
+    grafico.AdicionaMeta("#FFD700", 90);
+    grafico.AdicionaMeta("#008000", 97);
+}
+<table style="width:600px;">
+    <tr>
+        <th style="border-bottom:2px solid black">
+            @Html.DisplayNameFor(model => model.Data)
+        </th>
+        <th style="border-bottom:2px solid black">
+            @Html.DisplayNameFor(model => model.Alo)
+        </th>
+        <th style="border-bottom:2px solid black">
+            @Html.DisplayNameFor(model => model.Localizado)
+        </th>
+        <th style="border-bottom:2px solid black">
+            @Html.DisplayNameFor(model => model.Contato)
+        </th>
+        <th style="border-bottom:2px solid black">
+            @Html.DisplayNameFor(model => model.QtdAcordo)
+        </th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @item.Data.ToString("dd/MM/yyyy")
+            </td>
+
+            <td style="text-align:center;">
+                @{
+                    grafico.IdDiv = "DivAlo" + item.Data.ToString("yyyyMMdd");
+                    grafico.Max = item.MetaAlo;
+                    grafico.Value = item.Alo;
+                    @Html.Raw(grafico.DataBind());
+                }
+            </td>
+            <td style="text-align:center;">
+                @{
+                    grafico.IdDiv = "DivLocalizado" + item.Data.ToString("yyyyMMdd");
+                    grafico.Max = item.PercLocalizado == 0 ? 500 : Convert.ToInt32(item.Alo * (item.PercLocalizado / 100D));
+                    grafico.Value = item.Localizado;
+                    @Html.Raw(grafico.DataBind());
+                }
+            </td>
+            <td style="text-align:center;">
+                @{
+                    grafico.IdDiv = "DivContato" + item.Data.ToString("yyyyMMdd");
+                    grafico.Max = item.PercContato == 0 ? 500 : Convert.ToInt32((item.Alo * (item.PercLocalizado / 100D)) * (item.PercContato / 100D));
+                    grafico.Value = item.Contato;
+                    @Html.Raw(grafico.DataBind());
+                }
+            </td>
+
+            <td style="text-align:center;">
+                @{
+                    grafico.IdDiv = "DivQtdAcordo" + item.Data.ToString("yyyyMMdd");
+                    grafico.Max = item.PercAcordo == 0 ? 500 : Convert.ToInt32(((item.Alo * (item.PercLocalizado / 100D)) * (item.PercContato / 100D)) * (item.PercAcordo / 100D));
+                    grafico.Value = item.QtdAcordo;
+                    @Html.Raw(grafico.DataBind());
+                }
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Justificativa)
+            </td>
+        </tr>
+        <tr>
+            <td colspan="6" style="border-bottom:2px solid black">
+                @{
+                    string CorMetaDiario = string.Empty,
+                        CorMetaMensal = string.Empty,
+                        CorMetaRefin = string.Empty,
+                        CorMetaMensalRefin = string.Empty;
+
+                    /******************** Meta Diaria **************************************************/
+                    decimal MetaDiaria = item.MetaDiaria;
+                    int MetaAtingida = 0;
+                    if (MetaDiaria > 0)
+                    {
+                        MetaAtingida = Convert.ToInt32(Math.Round((item.Valor / MetaDiaria) * 100, 0));
+                        if (MetaAtingida > 100)
+                        {
+                            MetaAtingida = 100;
+                        }
+                    }
+
+
+                    if (MetaAtingida < 25) { CorMetaDiario = "CC0000"; }
+                    else if (MetaAtingida < 60) { CorMetaDiario = "CC0000"; }
+                    else if (MetaAtingida < 99) { CorMetaDiario = "FFD700"; }
+                    else { CorMetaDiario = "008000"; }
+                    /********************* Fim Meta Diaria *********************************************/
+                    /******************** Meta Mensal **************************************************/
+                    decimal MetaMensal = item.MetaMensal;
+                    int MetaMensalAtingida = 0;
+                    if (MetaMensal > 0)
+                    {
+                        MetaMensalAtingida = Convert.ToInt32(Math.Round((item.ValorMensal / MetaMensal) * 100, 0));
+                        if (MetaMensalAtingida > 100)
+                        {
+                            MetaMensalAtingida = 100;
+                        }
+                    }
+
+
+                    if (MetaMensalAtingida < 25) { CorMetaMensal = "CC0000"; }
+                    else if (MetaMensalAtingida < 60) { CorMetaMensal = "CC0000"; }
+                    else if (MetaMensalAtingida < 99) { CorMetaMensal = "FFD700"; }
+                    else { CorMetaMensal = "008000"; }
+                    /********************* Fim Meta Mensal *********************************************/
+                    /******************** Meta Refin ***************************************************/
+                    decimal MetaRefin = item.MetaRefin;
+                    int MetaRefinAtingida = 0;
+                    if (MetaRefin > 0)
+                    {
+                        MetaRefinAtingida = Convert.ToInt32(Math.Round((item.Refin / MetaRefin) * 100, 0));
+                        if (MetaRefinAtingida > 100)
+                        {
+                            MetaRefinAtingida = 100;
+                        }
+                    }
+
+                    if (MetaRefinAtingida < 25) { CorMetaRefin = "CC0000"; }
+                    else if (MetaRefinAtingida < 60) { CorMetaRefin = "CC0000"; }
+                    else if (MetaRefinAtingida < 99) { CorMetaRefin = "FFD700"; }
+                    else { CorMetaRefin = "008000"; }
+                    /********************* Fim Meta Refin **********************************************/
+                    /******************** Meta Refin Mensal ********************************************/
+                    decimal MetaRefinMensal = item.MetaRefinMensal;
+                    int MetaRefinMensalAtingida = 0;
+                    if (MetaRefinMensal > 0)
+                    {
+                        MetaRefinMensalAtingida = Convert.ToInt32(Math.Round((item.RefinMensal / MetaRefinMensal) * 100, 0));
+                        if (MetaRefinMensalAtingida > 100)
+                        {
+                            MetaRefinMensalAtingida = 100;
+                        }
+                    }
+
+                    if (MetaRefinMensalAtingida < 25) { CorMetaMensalRefin = "CC0000"; }
+                    else if (MetaRefinMensalAtingida < 60) { CorMetaMensalRefin = "CC0000"; }
+                    else if (MetaRefinMensalAtingida < 99) { CorMetaMensalRefin = "FFD700"; }
+                    else { CorMetaMensalRefin = "008000"; }
+                    /********************* Fim Meta Refin Mensal ***************************************/
+
+                }
+                <table style="width: 100%">
+                    <tr>
+                        <td style="width: 20%">Meta Diaria:</td>
+                        <td style="width: 40%">
+                            <div style="height: 20px; border: 1px solid black; background-color: #EEE; width: 100%" title="@(MetaDiaria.ToString("C2"))">
+                                @(MetaDiaria == 0 ? item.Valor.ToString("C2") + " (Meta não Cadastrada)" : "")
+                                <div style="height:20px; background-color: #@(CorMetaDiario); width: @(MetaAtingida)%; text-align: center; font-weight: bold;" title="@(item.Valor.ToString("C2"))">@(MetaAtingida > 25 ? item.Valor.ToString("C2") : "")</div>
+                            </div>
+                        </td>
+                        <td style="width: 40%">
+                            <div style="height: 20px; border: 1px solid black; background-color: #EEE; width: 100%" title="@(MetaRefin.ToString("C2"))">
+                                @(MetaRefinAtingida == 0 ? item.Refin.ToString("C2") + " (Meta não Cadastrada)" : "")
+                                <div style="height:20px; background-color: #@(CorMetaRefin); width: @(MetaRefinAtingida)%; text-align: center; font-weight: bold;" title="@(item.Refin.ToString("C2"))">@(MetaRefinAtingida > 25 ? item.Refin.ToString("C2") : "")</div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="width: 20%">Meta Mensal:</td>
+                        <td style="width: 40%">
+                            <div style="height: 20px; border: 1px solid black; background-color: #EEE; width: 100%" title="@(MetaMensal.ToString("C2"))">
+                                @(MetaMensal == 0 ? item.ValorMensal.ToString("C2") + " (Meta não Cadastrada)" : "")
+                                <div style="height:20px; background-color: #@(CorMetaMensal); width: @(MetaMensalAtingida)%; text-align: center; font-weight: bold;" title="@(item.ValorMensal.ToString("C2"))">@(MetaMensalAtingida > 25 ? item.ValorMensal.ToString("C2") : "")</div>
+                            </div>
+                        </td>
+                        <td style="width: 40%">
+                            <div style="height: 20px; border: 1px solid black; background-color: #EEE; width: 100%" title="@(MetaRefinMensal.ToString("C2"))">
+                                @(MetaRefinMensalAtingida == 0 ? item.RefinMensal.ToString("C2") + " (Meta não Cadastrada)" : "")
+                                <div style="height:20px; background-color: #@(CorMetaMensalRefin); width: @(MetaRefinMensalAtingida)%; text-align: center; font-weight: bold;" title="@(item.RefinMensal.ToString("C2"))">@(MetaRefinMensalAtingida > 25 ? item.RefinMensal.ToString("C2") : "")</div>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+
+
+
+
+            </td>
+        </tr>
+    }
+
+</table>

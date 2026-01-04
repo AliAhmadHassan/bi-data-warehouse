@@ -1,0 +1,21 @@
+﻿@model CobNet.BI.Web.Controllers.AcordoRealizadoModel
+
+<div style="height: 20px; border: 1px solid black; background-color: #EEE; width: 100%" title="@(Model.MetaDiaria.ToString("C2"))">
+
+    @if (Model.MetaAtingida < 20)
+    {
+        <div style="height:20px; background-color: #CC0000; width: @(Model.MetaAtingida)%; text-align: center; font-weight: bold;" title="@(Model.AcordoFormalizado.ToString("C2"))"></div>
+    }
+    else if (Model.MetaAtingida < 60)
+    {
+        <div style="height:20px; background-color: #CC0000; width: @(Model.MetaAtingida)%; text-align: center; font-weight: bold; color:White; " title="@(Model.AcordoFormalizado.ToString("C2"))">@(Model.AcordoFormalizado.ToString("C2"))</div>
+    }
+    else if (Model.MetaAtingida < 99)
+    {
+        <div style="height:20px; background-color: #FFD700; width: @(Model.MetaAtingida)%; text-align: center; font-weight: bold;" title="@(Model.AcordoFormalizado.ToString("C2"))">@(Model.AcordoFormalizado.ToString("C2"))</div>
+    }
+    else
+    {
+        <div style="height:20px; background-color: #008000; width: @(Model.MetaAtingida)%; text-align: center; font-weight: bold; color:White; " title="@(Model.AcordoFormalizado.ToString("C2"))">@(Model.AcordoFormalizado.ToString("C2"))</div>
+    }
+

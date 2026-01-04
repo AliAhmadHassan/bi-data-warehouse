@@ -1,0 +1,357 @@
+﻿@model IEnumerable<CobNet.BI.Web.Models.RelogioModel>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    List<CobNet.BI.Web.Models.MetasModel> metas = ViewBag.metas;
+
+    //CobNet.BI.Highcharts.Gauge.solid grafico = new CobNet.BI.Highcharts.Gauge.solid(120, 90);
+    CobNet.BI.Highcharts.Gauge.gauge grafico = new CobNet.BI.Highcharts.Gauge.gauge(150, 150);
+    grafico.Min = 0;
+
+    //gauge
+    grafico.AdicionaMeta("#CC0000", 0);
+    grafico.AdicionaMeta("#CC0000", 80);
+    grafico.AdicionaMeta("#FFD700", 90);
+    grafico.AdicionaMeta("#008000", 97);
+
+    //Solid
+    //grafico.AdicionaMeta("#CC0000", 10);
+    //grafico.AdicionaMeta("#CC0000", 60);
+    //grafico.AdicionaMeta("#FFD700", 70);
+    //grafico.AdicionaMeta("#FFD700", 80);
+    //grafico.AdicionaMeta("#008000", 90);
+}
+
+<div style="width:800px">
+    <center>
+
+        @foreach (var item in Model)
+        {
+            CobNet.BI.Web.Models.MetasModel meta = metas.Where(c => c.UsuarioId.Equals(item.UsuarioID)).FirstOrDefault();
+
+            <div style="border: 1px solid #a6c9e2; border-top-left-radius: 10px; border-top-right-radius: 10px; margin-top:10px;">
+                <div>
+                    <div style="text-align: center; background: #5c9ccc url(/Content/Image/ui-bg_glass-wave_500x100.png) 50% 50% repeat-x; color: white; border-top-left-radius: 10px; border-top-right-radius: 10px;">
+                        @if (item.Supervisor != 0)
+                        {
+                            @Html.ActionLink("(+)", "index", "Relogio", new { UsuarioID = item.UsuarioID }, new { target = "_blank" })
+                        }
+                        @Html.ActionLink(item.Nome, "Details", "ResultadoAnterior", new { id = item.UsuarioID }, new { target = "_blank" })
+                        @*@Html.DisplayFor(modelItem => item.Nome)*@
+                    </div>
+                </div>
+                <div style="display:table">
+                    <div style="display:table-row">
+                        <div style="text-align: center; font-weight: bold; display: table-cell;">
+                            Alo
+                        </div>
+                        <div style="text-align: center; font-weight: bold; display: table-cell;">
+                            Localizados
+                        </div>
+                        <div style="text-align: center; font-weight: bold; display: table-cell;">
+                            Contato com Cliente
+                        </div>
+                        <div style="text-align: center; font-weight: bold; display: table-cell;">
+                            Promessas
+                        </div>
+                        <div style="text-align: center; font-weight: bold; display: table-cell;">
+                            Quebra de Pgto
+                        </div>
+                    </div>
+                    <div style="display:table-row">
+                        <div style=" display: table-cell;">
+                            @{
+                        grafico.IdDiv = "DivAlo" + item.UsuarioID.ToString();
+
+                        grafico.Max = meta == null ? 500 : meta.Alo == 0 ? 500 : meta.Alo;
+                        grafico.Value = item.Alo;
+                        @Html.Raw(grafico.DataBind());
+                            }
+                            @*@Html.DisplayFor(modelItem => item.Alo)*@
+                        </div>
+                        <div style=" display: table-cell;">
+                            @{
+                                                 grafico.IdDiv = "DivLocalizado" + item.UsuarioID.ToString();
+
+                                                 grafico.Max = meta == null ? 500 : meta.PercLocalizado == 0 ? 500 : Convert.ToInt32(meta.Alo * (meta.PercLocalizado / 100D));
+                                                 grafico.Value = item.Localizado;
+                                                @Html.Raw(grafico.DataBind());
+                            }
+                            @*@Html.DisplayFor(modelItem => item.Localizado)*@
+                        </div>
+                        <div style=" display: table-cell;">
+                            @{
+                                                 grafico.IdDiv = "DivContato" + item.UsuarioID.ToString();
+
+                                                 grafico.Max = meta == null ? 500 : meta.PercContato == 0 ? 500 : Convert.ToInt32((meta.Alo * (meta.PercLocalizado / 100D)) * (meta.PercContato / 100D));
+                                                 grafico.Value = item.Contato;
+                                                @Html.Raw(grafico.DataBind());
+                            }
+                            @*@Html.DisplayFor(modelItem => item.Contato)*@
+                        </div>
+                        <div style=" display: table-cell;">
+                            @{
+                                                 grafico.IdDiv = "DivQtdAcordo" + item.UsuarioID.ToString();
+
+                                                 grafico.Max = meta == null ? 500 : meta.PercAcordo == 0 ? 500 : Convert.ToInt32(((meta.Alo * (meta.PercLocalizado / 100D)) * (meta.PercContato / 100D)) * (meta.PercAcordo / 100D));
+                                                 grafico.Value = item.QtdAcordo;
+                                                @Html.Raw(grafico.DataBind());
+                            }
+                            @*@Html.DisplayFor(modelItem => item.QtdAcordo)*@
+                        </div>
+                        <div style=" display: table-cell;">
+                            @{
+                                                 CobNet.BI.Highcharts.Gauge.gauge grafico2 = new CobNet.BI.Highcharts.Gauge.gauge(150, 150);
+                                                 grafico2.Min = 0;
+
+                                                 //gauge
+                                                 grafico2.AdicionaMeta("#008000", 0);
+                                                 grafico2.AdicionaMeta("#008000", meta == null ? 30 : meta.PercQuebra == 0 ? 30 : meta.PercQuebra);
+                                                 grafico2.AdicionaMeta("#CC0000", 100);
+
+                                                 grafico2.IdDiv = "DivQuebra" + item.UsuarioID.ToString();
+
+                                                 grafico2.Max = 100;
+                                                 grafico2.Value = item.Quebra;
+                                                @Html.Raw(grafico2.DataBind());
+                            }
+                            @*@Html.DisplayFor(modelItem => item.QtdAcordo)*@
+                        </div>
+                    </div>
+                </div>
+                <table style="width:100%">
+                    <tr>
+                        <td style="width:15%">
+                            Meta Diaria:
+                        </td>
+                        <td style="width:45%">
+
+                            @{
+
+                                                                              decimal MetaDiaria = 5000;
+
+                                                                              if (meta != null)
+                                                                              {
+                                                                                  if (meta.MetaDiaria != 0)
+                                                                                  {
+                                                                                      MetaDiaria = meta.MetaDiaria;
+                                                                                  }
+                                                                              }
+
+                                                                              int MetaAtingida = 0;
+                                                                              MetaAtingida = Convert.ToInt32(Math.Round((item.Promessa / MetaDiaria) * 100, 0));
+
+                                                                              if (MetaAtingida > 100)
+                                                                              {
+                                                                                  MetaAtingida = 100;
+                                                                              }
+
+                            }
+                            @*@Html.DisplayFor(modelItem => item.Promessa)*@
+
+
+                            <div style="height: 20px; border: 1px solid black; background-color: #EEE; width: 100%" title="@(MetaDiaria.ToString("C2"))">
+                                @if (MetaAtingida < 25)
+                                {
+                                    <div style="height:20px; background-color: #CC0000; width: @(MetaAtingida)%; text-align: center; font-weight: bold;" title="@(item.Promessa.ToString("C2"))"></div>
+                                }
+                                else if (MetaAtingida < 60)
+                                {
+                                    <div style="height:20px; background-color: #CC0000; width: @(MetaAtingida)%; text-align: center; font-weight: bold; color:White; " title="@(item.Promessa.ToString("C2"))">@(item.Promessa.ToString("C2"))</div>
+                                }
+                                else if (MetaAtingida < 99)
+                                {
+                                    <div style="height:20px; background-color: #FFD700; width: @(MetaAtingida)%; text-align: center; font-weight: bold;" title="@(item.Promessa.ToString("C2"))">@(item.Promessa.ToString("C2"))</div>
+                                }
+                                else
+                                {
+                                    <div style="height:20px; background-color: #008000; width: @(MetaAtingida)%; text-align: center; font-weight: bold; color:White; " title="@(item.Promessa.ToString("C2"))">@(item.Promessa.ToString("C2"))</div>
+                                }
+                            </div>
+                        </td>
+                        <td style="width:50%">
+                            @{
+
+                                decimal MetaRefinDiaria = 0;
+
+                                if (meta != null)
+                                {
+                                    if (meta.MetaRefin != 0)
+                                    {
+                                        MetaRefinDiaria = meta.MetaRefin;
+                                    }
+                                }
+
+                                int MetaRefinAtingida = 0;
+                                if (MetaRefinDiaria > 0)
+                                {
+                                    MetaRefinAtingida = Convert.ToInt32(Math.Round((item.Refin / MetaRefinDiaria) * 100, 0));
+
+                                    if (MetaRefinAtingida > 100)
+                                    {
+                                        MetaRefinAtingida = 100;
+                                    }
+                                }
+
+                            }
+                            @*@Html.DisplayFor(modelItem => item.Promessa)*@
+
+                            @if ((MetaAtingida < 100) && (DateTime.Today == Convert.ToDateTime(Request.QueryString.Get("Data"))))
+                            {
+                                <span>&nbsp;</span>
+                            }
+                            <div style="height: 20px; border: 1px solid black; background-color: #EEE; width: 100%" title="@(MetaRefinDiaria.ToString("C2"))">
+                                @if (MetaRefinAtingida < 25)
+                                    {
+                                        if (MetaRefinDiaria == 0)
+                                        {
+                                    <span> Meta não Cadastrada</span>
+                                        }
+                                        else
+                                        {
+                                    <div style="height:20px; background-color: #CC0000; width: @(MetaRefinAtingida)%; text-align: center; font-weight: bold;" title="@(item.Refin.ToString("C2"))"></div>
+                                        }
+                                    }
+                                    else if (MetaRefinAtingida < 60)
+                                    {
+                                    <div style="height:20px; background-color: #CC0000; width: @(MetaRefinAtingida)%; text-align: center; font-weight: bold; color:White; " title="@(item.Refin.ToString("C2"))">@(item.Refin.ToString("C2"))</div>
+                                    }
+                                    else if (MetaRefinAtingida < 99)
+                                    {
+                                    <div style="height:20px; background-color: #FFD700; width: @(MetaRefinAtingida)%; text-align: center; font-weight: bold;" title="@(item.Refin.ToString("C2"))">@(item.Refin.ToString("C2"))</div>
+                                    }
+                                    else
+                                    {
+                                    <div style="height:20px; background-color: #008000; width: @(MetaRefinAtingida)%; text-align: center; font-weight: bold; color:White; " title="@(item.Refin.ToString("C2"))">@(item.Refin.ToString("C2"))</div>
+                                    }
+                            </div>
+
+                        </td>
+                    </tr>
+
+                </table>
+                <table style="width:100%">
+                    <tr>
+                        <td style="width:15%">Meta Mensal</td>
+                        <td style="width:45%">
+
+                            @{
+
+                                decimal MetaMensal = 500000;
+
+                                if (meta != null)
+                                {
+                                    if (meta.MetaMensal != 0)
+                                    {
+                                        MetaMensal = meta.MetaMensal;
+                                    }
+                                }
+                                int MetaMensalAtingida = 0;
+                                MetaMensalAtingida = Convert.ToInt32(Math.Round((item.MetaMensal / MetaMensal) * 100, 0));
+                                if (MetaMensalAtingida > 100)
+                                {
+                                    MetaMensalAtingida = 100;
+                                }
+
+                            }
+                            @*@Html.DisplayFor(modelItem => item.Promessa)*@
+                            <div style="height: 20px; border: 1px solid black; background-color: #EEE; width: 100%" title="@(MetaMensal.ToString("C2"))">
+                                @if (MetaMensalAtingida < 25)
+                            {
+                                if (MetaMensal == 0)
+                                {
+                                <span> Meta não Cadastrada</span>
+                                }
+                                else
+                                {
+                                <div style="height:20px; background-color: #CC0000; width: @(MetaMensalAtingida)%; text-align: center; font-weight: bold;" title="@(item.MetaMensal.ToString("C2"))"></div>
+                                }
+                            }
+                            else if (MetaMensalAtingida < 60)
+                            {
+                                <div style="height:20px; background-color: #CC0000; width: @(MetaMensalAtingida)%; text-align: center; font-weight: bold; color:White; " title="@(item.MetaMensal.ToString("C2"))">@(item.MetaMensal.ToString("C2"))</div>
+                            }
+                            else if (MetaMensalAtingida < 99)
+                            {
+                                <div style="height:20px; background-color: #FFD700; width: @(MetaMensalAtingida)%; text-align: center; font-weight: bold;" title="@(item.MetaMensal.ToString("C2"))">@(item.MetaMensal.ToString("C2"))</div>
+                            }
+                            else
+                            {
+                                <div style="height:20px; background-color: #008000; width: @(MetaMensalAtingida)%; text-align: center; font-weight: bold; color:White; " title="@(item.MetaMensal.ToString("C2"))">@(item.MetaMensal.ToString("C2"))</div>
+                            }
+                            </div>
+                        </td>
+                        <td style="width:50%">
+
+                            @{
+
+                                decimal MetaRefinMensal = 0;
+
+                                if (meta != null)
+                                {
+                                    if (meta.MetaMensal != 0)
+                                    {
+                                        MetaRefinMensal = meta.MetaRefinMensal;
+                                    }
+                                }
+                                int MetaRefinMensalAtingida = 0;
+
+                                if (MetaRefinMensal > 0)
+                                {
+                                    MetaRefinMensalAtingida = Convert.ToInt32(Math.Round((item.RefinMensal / MetaRefinMensal) * 100, 0));
+                                    if (MetaRefinMensalAtingida > 100)
+                                    {
+                                        MetaRefinMensalAtingida = 100;
+                                    }
+                                }
+
+                            }
+                            @*@Html.DisplayFor(modelItem => item.Promessa)*@
+                            <div style="height: 20px; border: 1px solid black; background-color: #EEE; width: 100%" title="@(MetaRefinMensal.ToString("C2"))">
+                                @if (MetaRefinMensalAtingida < 30)
+                            {
+
+                                if (MetaRefinMensal == 0)
+                                {
+                                <span> Meta não Cadastrada</span>
+                                }
+                                else
+                                {
+                                <div style="height:20px; background-color: #CC0000; width: @(MetaRefinMensalAtingida)%; text-align: center; font-weight: bold;" title="@(item.RefinMensal.ToString("C2"))">
+                                </div>
+                                }
+                            }
+                            else if (MetaRefinMensalAtingida < 60)
+                            {
+                                <div style="height:20px; background-color: #CC0000; width: @(MetaRefinMensalAtingida)%; text-align: center; font-weight: bold; color:White; " title="@(item.RefinMensal.ToString("C2"))">@(item.RefinMensal.ToString("C2"))</div>
+                            }
+                            else if (MetaRefinMensalAtingida < 99)
+                            {
+                                <div style="height:20px; background-color: #FFD700; width: @(MetaRefinMensalAtingida)%; text-align: center; font-weight: bold;" title="@(item.RefinMensal.ToString("C2"))">@(item.RefinMensal.ToString("C2"))</div>
+                            }
+                            else
+                            {
+                                <div style="height:20px; background-color: #008000; width: @(MetaRefinMensalAtingida)%; text-align: center; font-weight: bold; color:White; " title="@(item.RefinMensal.ToString("C2"))">@(item.RefinMensal.ToString("C2"))</div>
+                            }
+
+
+
+                            </div>
+                        </td>
+                    </tr>
+                    @if ((MetaAtingida < 100))
+                    {
+                        <tr>
+                            <td> Justificar: </td>
+                            <td colspan="2">
+                                @Html.Action("Create", "FeedBack", new { UsuarioID = item.UsuarioID })
+                            </td>
+                        </tr>
+                    }
+                </table>
+            </div>
+        }
+    </center>
+</div>

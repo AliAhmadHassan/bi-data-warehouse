@@ -1,0 +1,15 @@
+﻿@model CobNet.BI.Web.Models.RelogioModel
+
+@{
+    CobNet.BI.Highcharts.Gauge.Solid grafico = new CobNet.BI.Highcharts.Gauge.Solid("DivAlo" + Model.IdUsuario.ToString(), 200, 120);
+    grafico.Min = Model.Min;
+    grafico.Max = Model.Max;
+    grafico.Value = Model.Valor;
+    grafico.AdicionaMeta("#CC0000", 10);
+    grafico.AdicionaMeta("#CC0000", 60);
+    grafico.AdicionaMeta("#FFD700", 70);
+    grafico.AdicionaMeta("#FFD700", 80);
+    grafico.AdicionaMeta("#008000", 90);
+
+    @Html.Raw(grafico.DataBind())
+}

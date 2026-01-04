@@ -1,0 +1,44 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div style="height:200px;">
+
+</div>
+<div style="background: url(/Content/Image/backLogin.jpg) no-repeat; ">
+    <div style="height: 200px;">
+        <img src="~/Content/Image/banner.png" style="height: 200px;" />
+    </div>
+    <div style="position:absolute; top:210px; left:900px; height: 200px;">
+
+        @using (@Html.BeginForm())
+        {
+            <div style=" border: 1px solid #a6c9e2; background-color:white; height:120px; margin:40px; border-radius:10px; width:250px;">
+                <div style="background: #5c9ccc url(/Content/Image/ui-bg_glass-wave_500x100.png) 50% 50% repeat-x; width: 100%; border-top-left-radius: 10px; border-top-right-radius: 10px; color:white; font-weight:bold; text-align:center ">Login</div>
+                <div style="display: table; padding: 10px;">
+                    <div style="display: table-row; ">
+                        <div style="display: table-cell; ">
+                            Usuario:
+                        </div>
+                        <div style="display: table-cell;  padding-left:10px;">
+                            @Html.TextBox("txtLogin", null, new { style = "width:160px;" })
+                        </div>
+                    </div>
+                    <div style="display: table-row; ">
+                        <div style="display: table-cell; padding-top: 10px; ">
+                            Senha:
+                        </div>
+                        <div style="display: table-cell; padding-top: 10px; padding-left: 10px;">
+                            @Html.Password("txtSenhaLogin", null, new{style="width:160px;"})
+
+                        </div>
+                    </div>
+
+                </div>
+                <div style="padding-right: 18px; text-align: right;">
+                    <input type="submit" value="Logar" />
+                </div>
+            </div>
+        }
+    </div>
+</div>

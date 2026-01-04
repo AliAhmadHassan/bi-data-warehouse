@@ -1,0 +1,52 @@
+﻿@model IEnumerable<CobNet.BI.Web.Models.UsuarioModel>
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<center>
+    <div>
+        <table style="text-align:left;">
+            <tr>
+                <th>
+                    Supervisor: @(new CobNet.BI.BLL.Usuario().Obter(Model.FirstOrDefault().SupervisorID).Nome)
+                </th>
+                <th style="text-align:center;">Alo</th>
+                <th style="text-align:center;">Localizado</th>
+                <th style="text-align:center;">Contato com Cliente</th>
+                <th style="text-align:center;">Acordo</th>
+                <th style="text-align:center;">Quebra</th>
+            </tr>
+
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Nome)
+                    </td>
+                    <td>
+                        @Html.Action("Alo", "Relogio", new { IdUsuario = item.UsuarioID, data = "2015-03-24" })
+                    </td>
+                    <td>
+                        @Html.Action("Localizado", "Relogio", new { IdUsuario = item.UsuarioID, data = "2015-03-24" })
+                    </td>
+                    <td>
+                        @Html.Action("Contato", "Relogio", new { IdUsuario = item.UsuarioID, data = "2015-03-24" })
+                    </td>
+                    <td>
+                        @Html.Action("Relogio", "Acordo", new { IdUsuario = item.UsuarioID, data = "2015-03-24" })
+                    </td>
+                    <td>
+                        @Html.Action("RelogioQuebra", "Acordo", new { IdUsuario = item.UsuarioID, data = "2015-03-24" })
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border-bottom:1px dotted black;">Meta Diaria:</td>
+                    <td colspan="5" style="border-bottom:1px dotted black;">@Html.Action("MetaDiaria", "Acordo", new { IdUsuario = item.UsuarioID, data = "2015-03-24" })</td>
+                </tr>
+            }
+
+        </table>
+    </div>
+</center>

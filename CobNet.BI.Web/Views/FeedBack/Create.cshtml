@@ -1,0 +1,10 @@
+﻿@model CobNet.BI.Web.Models.FeedBackModel
+
+@using (Html.BeginForm("Create", "FeedBack")) {
+        @Html.EditorFor(model => model.Justificativa) <input type="submit" value="Salvar" />
+        @Html.HiddenFor(model => model.Id)
+        @Html.HiddenFor(model => model.Usuario)
+        @Html.HiddenFor(model => model.UsuarioID)
+        @Html.HiddenFor(model => model.Data)
+        @Html.Hidden("SupervisorID", Request.QueryString.Get("UsuarioID"))
+}
